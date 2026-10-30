@@ -25,3 +25,10 @@ The key trade-off: at each node we prefer `__cause__` over `__context__` (matchi
 The `traceback` field of each entry contains only that single exception's immediate traceback — not the formatted tracebacks of its ancestors. This is deliberate: including the full nested chain inside each entry would duplicate information across entries and produce deeply recursive output. If you want the classic monolithic string, call `traceback.format_exception` on the root exception yourself.
 
 Also note: an exception with no live traceback (constructed but never raised, or whose traceback was already cleared) yields an empty string in the `traceback` field, not `None`.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
